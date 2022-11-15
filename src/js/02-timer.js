@@ -8,15 +8,13 @@ const refs = {
     userDate: document.querySelector('#datetime-picker'),
     btnEl: document.querySelector('[data-start]'),
     timerContainer: document.querySelector('.timer'),
-    field: document.querySelector('.field'),
+    fieldEl: document.querySelector('.field'),
     daysEl: document.querySelector('[data-days]'),
     hoursEl: document.querySelector('[data-hours]'),
     minutesEl: document.querySelector('[data-minutes]'),
     secondsEl: document.querySelector('[data-seconds]'),
 } 
 // console.log(refs);
-
-
 
 
 // style
@@ -30,7 +28,7 @@ refs.timerContainer.style.alignItems = 'center';
 refs.timerContainer.style.color = '#2b97e9';
 refs.timerContainer.style.textShadow = '0 6px #e9e22b';
 refs.timerContainer.style.fontSize = '31px';
-refs.field.style.gap = '30px';
+refs.fieldEl.style.gap = '30px';
 
 // const currentTime = new Date();
 // const dayFromInput = currentTime.getDay();
@@ -42,7 +40,8 @@ refs.field.style.gap = '30px';
 // const secondsFromInput = currentTime.getSeconds();
 // // console.log(secondsFromInput);
 
-
+const currentTime = Date.now();
+console.log(currentTime);
 
 const options = {
     enableTime: true,
@@ -52,46 +51,57 @@ const options = {
     onClose(selectedDates) {
         //   console.log(selectedDates[0]);
         //   загальний
-        const newData = selectedDates[0];
+        let newData = Date.parse(selectedDates[0]);
         console.log(newData);
-        const currentTime = Date.now();
-        console.log(currentTime);
+       
         if (newData <= currentTime) {
             refs.btnEl.disabled = true;
             Notify.failure("Please choose a date in the future");
             return;
-
         }
         refs.btnEl.disabled = false;
-        refs.btnEl.addEventListener('submit', () => {
+refs.btnEl.addEventListener('click', onCounter())
+         
+ function onCounter() {
+                    
+        refs.btnEl.disabled = true;
+        setInterval(() => {                   
+        let id = newData - currentTime;
+        console.log(id)
             
-            refs.btnEl.disabled = true;
-            let id = null;
-            id = setInterval(() => {
-                
-                let timeMs = newData - currentTime;
-                console.log(timeMs);
-                const timeOnDisplay = convertMs(timeMs);
-                console.log(timeOnDisplay);
-                refs.daysEl.textContent = addLeadingZero(timeOnDisplay.days);
-                refs.hoursEl.textContent = addLeadingZero(timeOnDisplay.hours);
-                refs.minutesEl.textContent = addLeadingZero(timeOnDisplay.minutes);
-                refs.secondsEl.textContent = addLeadingZero(timeOnDisplay.seconds);
+        let timeMs = id;
+        console.log(timeMs);
+        const timeOnDisplay = convertMs(timeMs);
+        console.log(timeOnDisplay);
 
-                if (timeOnDisplay === '0') {
-                    clearInterval(timerID);
-                    Notify.info("The end");
-                    return
-                }
-            }, 1000)
-       
-        })
-    }
+
+        refs.daysEl.textContent = addLeadingZero(timeOnDisplay.days);
+        refs.hoursEl.textContent = addLeadingZero(timeOnDisplay.hours);
+        refs.minutesEl.textContent = addLeadingZero(timeOnDisplay.minutes);
+        refs.secondsEl.textContent = addLeadingZero(timeOnDisplay.seconds);
+
+        if (refs.secondsEl.textContent === 0) {
+            clearInterval(timerID);
+            Notify.info("The end");
+            return
+        }
+    }, 1000)
 }
+   
+    }
+
+
+}  // ***********************************
+    
+       
+        
+    console.log(options)
+
+
 
     
 
-const flatpicker =  flatpickr(refs.userDate, options);
+let flatpicker =  flatpickr(refs.userDate, options)
 
 // function updateClockface({ hours, mins, secs }) {
 //     refs.clockface.textContent = `${hours} : ${mins} : ${secs}`;
@@ -118,7 +128,7 @@ function convertMs(timeMs) {
   const minutes = Math.floor(((timeMs % day) % hour) / minute);
   // Remaining seconds
   const seconds = Math.floor((((timeMs % day) % hour) % minute) / second);
-    console.log('HELLO')
+    console.log('function convertMs')
     return { days, hours, minutes, seconds };
     
       
@@ -130,12 +140,3 @@ function addLeadingZero(value) {
 }
 
 
-
-// flatpickr(userDate,{
-//     onClose(selectedDates){
-//         const time = selectedDates[0];
-//         console.log(time);
-// }
-// });
-
-// console.log(flatpickr);
