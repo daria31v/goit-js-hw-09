@@ -17,7 +17,6 @@ buttonStop.setAttribute('disabled', true);
 buttonStart.addEventListener('click', () => {
   colorId = setInterval(() => {
     mainColor.style.backgroundColor = getRandomHexColor();
-    console.log('change color');
   }, 1000);
  
   buttonStop.removeAttribute('disabled');
@@ -30,7 +29,6 @@ function getRandomHexColor() {
 
 buttonStop.addEventListener('click', () => {
   clearInterval(colorId);
-  console.log('STOP change color');
   buttonStart.removeAttribute('disabled');
   buttonStop.setAttribute('disabled', true);
 });
